@@ -28,7 +28,7 @@ debug: debug_system_driver
 all: release release_debug debug
 
 run: release
-	sudo ./release/bin/system_driver
+	./release/bin/system_driver
 
 remote_clean:
 	sshpass -p ${password} ssh ${user}@${pi} "cd ${dir} && make clean"
