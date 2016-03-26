@@ -24,6 +24,7 @@ const std::size_t buffer_size = 4096;
 // Configuration (this should be in a configuration file)
 const char* server_socket_path = "/tmp/asgard_socket";
 const char* client_socket_path = "/tmp/asgard_system_socket";
+const char* sys_thermal = "/sys/class/thermal/thermal_zone0/temp";
 const std::size_t delay_ms = 5000;
 
 //Buffer
@@ -70,7 +71,7 @@ void terminate(int){
 }
 
 double read_system_temperature(){
-    std::ifstream is("/sys/class/thermal/thermal_zone0/temp");
+    std::ifstream is(sys_thermal);
     std::string line;
     std::getline(is, line);
     int value = std::atoi(line.c_str());
