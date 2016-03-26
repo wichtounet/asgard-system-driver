@@ -16,7 +16,7 @@ conf: pi.conf
 
 include pi.conf
 
-CXX_FLAGS += -pedantic -pthread
+CXX_FLAGS += -pedantic -pthread -Iasgard-lib/include/
 
 $(eval $(call auto_folder_compile,src))
 $(eval $(call auto_add_executable,system_driver))
