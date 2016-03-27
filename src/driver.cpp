@@ -56,13 +56,15 @@ int main(){
         return 1;
     }
 
-    //Register signals for "proper" shutdown
+    // Register signals for "proper" shutdown
     signal(SIGTERM, terminate);
     signal(SIGINT, terminate);
 
+    // Register the source and sensors
     source_id = asgard::register_source(driver, "system");
     sensor_id = asgard::register_sensor(driver, source_id, "TEMPERATURE", "cpu");
 
+    // Send data to the server continuously
     while(true){
         double value = read_system_temperature();
 
