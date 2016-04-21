@@ -9,12 +9,7 @@
 
 namespace {
 
-// Configuration (this should be in a configuration file)
-const char* server_socket_path = "/tmp/asgard_socket";
-const char* client_socket_path = "/tmp/asgard_system_socket";
-const char* sys_thermal = "/sys/class/thermal/thermal_zone0/temp";
-const std::size_t delay_ms = 5000;
-
+std::vector<asgard::KeyValue> config;
 asgard::driver_connector driver;
 
 // The remote IDs
@@ -28,7 +23,7 @@ void stop(){
     asgard::unregister_source(driver, source_id);
 
     // Unlink the client socket
-    unlink(client_socket_path);
+    unlink(asgard::get_string_value(config, "sys_client_socket_path"));
 
     // Close the socket
     close(driver.socket_fd);
@@ -41,7 +36,7 @@ void terminate(int){
 }
 
 double read_system_temperature(){
-    std::ifstream is(sys_thermal);
+    std::ifstream is(asgard::get_string_value(config, "sys_thermal"));
     std::string line;
     std::getline(is, line);
     int value = std::atoi(line.c_str());
@@ -51,8 +46,10 @@ double read_system_temperature(){
 } //End of anonymous namespace
 
 int main(){
+    load_config(config);
+    
     // Open the connection
-    if(!asgard::open_driver_connection(driver, client_socket_path, server_socket_path)){
+    if(!asgard::open_driver_connection(driver, asgard::get_string_value(config, "sys_client_socket_path"), asgard::get_string_value(config, "server_socket_path"))){
         return 1;
     }
 
@@ -71,7 +68,7 @@ int main(){
         asgard::send_data(driver, source_id, sensor_id, value);
 
         // Wait some time before messages
-        usleep(delay_ms * 1000);
+        usleep(asgard::get_int_value(config, "sys_delay_ms") * 1000);
     }
 
     stop();
