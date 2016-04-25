@@ -9,7 +9,10 @@
 
 namespace {
 
+// Configuration
 std::vector<asgard::KeyValue> config;
+
+// The driver connection
 asgard::driver_connector driver;
 
 // The remote IDs
@@ -23,7 +26,7 @@ void stop(){
     asgard::unregister_source(driver, source_id);
 
     // Unlink the client socket
-    unlink(asgard::get_string_value(config, "sys_client_socket_path"));
+    unlink(asgard::get_string_value(config, "sys_client_socket_path").c_str());
 
     // Close the socket
     close(driver.socket_fd);
@@ -36,7 +39,7 @@ void terminate(int){
 }
 
 double read_system_temperature(){
-    std::ifstream is(asgard::get_string_value(config, "sys_thermal"));
+    std::ifstream is(asgard::get_string_value(config, "sys_thermal").c_str());
     std::string line;
     std::getline(is, line);
     int value = std::atoi(line.c_str());
@@ -46,10 +49,11 @@ double read_system_temperature(){
 } //End of anonymous namespace
 
 int main(){
-    load_config(config);
+    // Load the configuration file
+    asgard::load_config(config);
     
     // Open the connection
-    if(!asgard::open_driver_connection(driver, asgard::get_string_value(config, "sys_client_socket_path"), asgard::get_string_value(config, "server_socket_path"))){
+    if(!asgard::open_driver_connection(driver, asgard::get_string_value(config, "sys_client_socket_path").c_str(), asgard::get_string_value(config, "server_socket_path").c_str())){
         return 1;
     }
 
