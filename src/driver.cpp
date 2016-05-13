@@ -53,7 +53,7 @@ int main(){
     asgard::load_config(config);
     
     // Open the connection
-    if(!asgard::open_driver_connection(driver, asgard::get_string_value(config, "sys_client_socket_path").c_str(), asgard::get_string_value(config, "server_socket_path").c_str())){
+    if(!asgard::open_driver_connection(driver, asgard::get_string_value(config, "server_socket_addr").c_str(), asgard::get_int_value(config, "server_socket_port"))){
         return 1;
     }
 
